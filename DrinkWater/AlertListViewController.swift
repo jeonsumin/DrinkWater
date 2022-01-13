@@ -6,16 +6,26 @@
 //
 
 import UIKit
+import UserNotifications
+
 
 class AlertListViewController: UITableViewController {
     
     var alerts: [Alert] = []
+    let userNotificationCenter = UNUserNotificationCenter.current()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let nibName = UINib(nibName: "AlertListCell", bundle: nil)
         tableView.register(nibName, forCellReuseIdentifier: "AlertListCell")
+        let authrizationOptions = UNAuthorizationOptions(arrayLiteral: [.alert, .badge, .sound])
+        userNotificationCenter.requestAuthorization(options: authrizationOptions) {didAlow , error in
+            if let error = error {
+                print("ERROR: notification authrization request \(error.localizedDescription)")
+            }
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -36,6 +46,7 @@ class AlertListViewController: UITableViewController {
             self.alerts = alertList
             
             UserDefaults.standard.set(try? PropertyListEncoder().encode(self.alerts), forKey: "alerts")
+            self.userNotificationCenter.addNotificationReqeust(by: newAlert)
             self.tableView.reloadData()
         }
         present(addAlertVC, animated: true, completion: nil)
@@ -94,6 +105,8 @@ extension AlertListViewController {
             //테이블 뷰는 userdefaults의 데이터를 바로 가져오지 못하기때문에 인코딩 필요
             UserDefaults.standard.set(try? PropertyListEncoder().encode(self.alerts), forKey: "alerts")
             
+            //노티 삭제
+            userNotificationCenter.removePendingNotificationRequests(withIdentifiers: [alerts[indexPath.row].id])
             self.tableView.reloadData()
             
             return

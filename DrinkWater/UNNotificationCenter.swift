@@ -17,7 +17,16 @@ extension UNUserNotificationCenter {
         content.badge = 1
         
         
-        let components = Calendar.current.dateComponents([.hour, .minute], from: alert.date)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: alert.isOn)
+        let components = Calendar.current.dateComponents([.hour, .minute],
+                                                         from: alert.date)
+        
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components,
+                                                    repeats: alert.isOn)
+        
+        let request = UNNotificationRequest(identifier: alert.id,
+                                            content: content,
+                                            trigger: trigger)
+        
+        self.add(request, withCompletionHandler: nil)
     }
 }
