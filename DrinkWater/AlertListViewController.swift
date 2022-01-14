@@ -10,11 +10,11 @@ import UserNotifications
 
 
 class AlertListViewController: UITableViewController {
-    
+    //MAKR: - Properties
     var alerts: [Alert] = []
     let userNotificationCenter = UNUserNotificationCenter.current()
     
-    
+    //MAKR: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,7 +31,7 @@ class AlertListViewController: UITableViewController {
         super.viewWillAppear(animated)
         alerts = alertList()
     }
-    
+    //MAKE: - IBAction
     @IBAction func addAlertButtonTapped(_ sender: Any) {
         guard let addAlertVC = storyboard?.instantiateViewController(withIdentifier: "AddAlertViewController") as? AddAlertViewController else { return }
         addAlertVC.pickedDate = {[weak self] date in
@@ -52,7 +52,7 @@ class AlertListViewController: UITableViewController {
         present(addAlertVC, animated: true, completion: nil)
     }
     
-    
+    //MAKE: - Fuction
     func alertList() -> [Alert]{
         guard let data = UserDefaults.standard.value(forKey: "alerts") as? Data,
               // JSON 디코딩과 똑같은 프로퍼티리스트의 읽을 수 있도록 디코딩 작업이 필요하다.
